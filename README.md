@@ -1,6 +1,6 @@
 # Sentiment-Classification
 
-Sentiment-Classification is a project to classify sentiments from YELP reviews.
+Sentiment-Classification is a project about Sentiment Classification using unstructured text.(take yelp reviews forexample)
 
 ## Data Resource
 * [reviews download](https://www.yelp.com/dataset)
