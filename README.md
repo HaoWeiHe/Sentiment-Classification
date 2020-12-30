@@ -17,7 +17,7 @@ Sentiment Classification using unstructured text
 * establish & tuning `LogisticRegression` model.
 
 ## Observation
-![image](https://github.com/HaoWeiHe/Sentiment-Classification/blob/main/Imgs/features_td-idf.png)
+![image](https://github.com/HaoWeiHe/Sentiment-Classification/blob/main/Imgs/word%20observation_tf-idf.png)
 
 ## Evaluation metrics
 ### 1.1 
