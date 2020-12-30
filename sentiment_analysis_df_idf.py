@@ -192,8 +192,7 @@ sv = LinearSVC(random_state=2018)
 
 param_grid2 = {
     'loss':['squared_hinge'],
-    # 'class_weight':[{1:8}], #already unsampling
-    'C': [0.1, 0.2, 0.3]
+    'C': [0.3] #[0.1, 0.2, 0.3]
 }
 
 
@@ -202,7 +201,7 @@ gs_sv.fit(train_tv, Y_train['sentiment'])
 gs_sv_best = gs_sv.best_estimator_
 print(gs_sv.best_params_)
 
-# {'C': 0.3, 'loss': 'squared_hinge'}
+# best params: {'C': 0.3, 'loss': 'squared_hinge'}
 
 print(gs_sv.best_score_)
 
@@ -216,23 +215,23 @@ stn_v = tfidf.transform([stn_clean])
 print(gs_sv.predict(stn_v))
 
 bnb = BernoulliNB()
-gs_bnb = GridSearchCV(bnb, param_grid = {'alpha': [0.001 ,0.01,  0.1],
+gs_bnb = GridSearchCV(bnb, param_grid = {'alpha':[0.001],# [0.001 ,0.01,  0.1]
                                          'binarize': [0.001]}, verbose = 1, cv = kfold, n_jobs = 1, scoring = "roc_auc")
 gs_bnb.fit(train_tv, Y_train['sentiment'])
 gs_bnb_best = gs_bnb.best_estimator_
 print(gs_bnb.best_params_)
 
-# {'alpha': 0.001, 'binarize': 0.001} - 0.86960
+# {'alpha': 0.001, 'binarize': 0.001}
 
 print(gs_bnb.best_score_)
 
 MLP = MLPClassifier(random_state = 2018)
 
 mlp_param_grid = {
-    'hidden_layer_sizes':[(e) for e in range(10)],
+    'hidden_layer_sizes':[(5)],
     'activation':['relu'],
-    'solver':['adam','lbfgs'],
-    'alpha':[0.1, 0.2, 0.3],
+    'solver':['adam'],
+    'alpha':[0.3],
     'learning_rate':['constant'],
     'max_iter':[1000]
 }
@@ -243,20 +242,15 @@ gsMLP.fit(train_tv,Y_train['sentiment'])
 print(gsMLP.best_params_)
 mlp_best0 = gsMLP.best_estimator_
 
-# {'activation': 'relu', 'alpha': 0.1, 'hidden_layer_sizes': (1,), 'learning_rate': 'constant', 'max_iter': 1000, 'solver': 'adam'} - 0.89996
-# {'activation': 'relu', 'alpha': 0.1, 'hidden_layer_sizes': (5,), 'learning_rate': 'constant', 'max_iter': 1000, 'solver': 'adam'} - 0.89896
-# {'activation': 'relu', 'alpha': 0.2, 'hidden_layer_sizes': (1,), 'learning_rate': 'constant', 'max_iter': 1000, 'solver': 'adam'} - 0.90284
-# {'activation': 'relu', 'alpha': 0.3, 'hidden_layer_sizes': (5,), 'learning_rate': 'constant', 'max_iter': 1000, 'solver': 'adam'} - 0.90356
-
 print(gsMLP.best_score_)
 
 lr = LogisticRegression(random_state = 2018)
 
 lr2_param = {
-    'penalty':['l2','l1'],
-    'dual':[True],
+    'penalty':['l2'],
     'C':[6],
-    'class_weight':[{1:1}]
+    'class_weight':[{1:1}],
+    'solver':['lbfgs'],
     }
 
 lr_CV = GridSearchCV(lr, param_grid = [lr2_param], cv = kfold, scoring = 'roc_auc', n_jobs = 1, verbose = 1)
@@ -264,7 +258,7 @@ lr_CV.fit(train_tv, Y_train['sentiment'])
 print(lr_CV.best_params_)
 logi_best = lr_CV.best_estimator_
 
-# {'C': 6, 'class_weight': {1: 1}, 'dual': True, 'penalty': 'l2'} - 90.360
+# {'C': 6, 'class_weight': {1: 1}, 'dual': True, 'penalty': 'l2'}
 
 print(lr_CV.best_score_)
 
@@ -279,13 +273,11 @@ feature_names[index][0][:30]
 
 feature_names[index][0][-30::]
 
-feature_names[index][0][-30::]
-
 index_comb = list(coefficients[0][index[0][:30]]) + list(coefficients[0][index[0][-30::]])
-
+feature_names = list(feature_names[index][0][:30]) + list(feature_names[index][0][-30::])
 plt.figure(figsize=(25,10))
 barlist = plt.bar(list(i for i in range(60)), index_comb)
-plt.xticks(list(i for i in range(61)) , index_comb, rotation=60 , size=15)
+plt.xticks(list(i for i in range(61)) , feature_names, rotation=60 , size=15)
 plt.ylabel('Coefficient magnitude',size=20)
 plt.xlabel('Features',size=20)
 
@@ -294,3 +286,23 @@ for i in range(30):
     barlist[i].set_color('orange')
 
 plt.show()
+
+models = [gs_sv_best,gs_bnb_best,mlp_best0,logi_best]
+
+for model in models:
+  from sklearn.metrics import classification_report
+  print("MODEL: {} ".format(str(model)))
+  train_predict = model.predict(train_tv)
+  test_predict = model.predict(test_tv)
+  print(">> training set \n")
+  print(classification_report(Y_train['sentiment'],train_predict))
+  print(">> testing set \n")
+  print(classification_report(Y_test['sentiment'],test_predict))
+
+  from sklearn.metrics import roc_auc_score
+  roc_score1 = roc_auc_score(Y_train['sentiment'],train_predict)
+  roc_score = roc_auc_score(Y_test['sentiment'],test_predict)
+  print("Training set- roc_auc score:\t{:.2f}".format(roc_score1))
+  print("Testing set - roc_auc score:\t{:.2f}".format(roc_score))
+  print("\n\n")
+
