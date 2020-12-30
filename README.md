@@ -17,9 +17,11 @@ Sentiment Classification using unstructured text
 * establish & tuning `LogisticRegression` model.
 
 ## Observation
-* top influence features (from LogisticRegression model)
+- top influence features (from LogisticRegression model)
 ![image](https://github.com/HaoWeiHe/Sentiment-Classification/blob/main/Imgs/word%20observation_tf-idf.png)
 
+- word frequency distribution (black line is normal distribution, bule one is actual distribution. The average of each review has 75 words in our corpus and the actually distribution is quite skew). (using k-fold will reduce variance which may make this distribution more skew )
+![image](https://github.com/HaoWeiHe/Sentiment-Classification/tree/main/Imgs)
 
 ## Evaluation metrics
 ### 1.1 
