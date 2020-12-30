@@ -21,10 +21,10 @@ Sentiment Classification using unstructured text
 ![image](https://github.com/HaoWeiHe/Sentiment-Classification/blob/main/Imgs/word%20observation_tf-idf.png)
 
 
-- word frequency distribution (black line is normal distribution, bule one is actual distribution. The average of each review has 75 words in our corpus and the actually distribution is quite skew)
+- word frequency distribution (Black contour is normal distribution. Bule contour is actual distribution. The average of each review has 75 words in our corpus and the actually distribution is quite skew)
 ![image](https://github.com/HaoWeiHe/Sentiment-Classification/blob/main/Imgs/w_f.png)
 
-In this experiment, I use k-fold + auc_roc as evaluation mertic to determine the best paramters of GridSearchCV. However, using k-fold will reduce variance which may make this distribution more skew.
+In this experiment, I use k-fold + auc_roc as the evaluation mertic to determine the best paramters of GridSearchCV. However, using k-fold will reduce variance which may make this distribution more skew.
 
 ## Evaluation metrics
 ### 1.1 
