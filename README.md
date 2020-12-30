@@ -17,11 +17,11 @@ Sentiment Classification using unstructured text
 * establish & tuning `LogisticRegression` model.
 
 ## Observation
-- top influence features (from LogisticRegression model)
+- Top influence features (from LogisticRegression model)
 ![image](https://github.com/HaoWeiHe/Sentiment-Classification/blob/main/Imgs/word%20observation_tf-idf.png)
 
 
-- word frequency distribution (Black contour is normal distribution. Bule contour is actual distribution. The average of each review has 75 words in our corpus and the actually distribution is quite skew)
+- Word frequency distribution (Black contour is normal distribution. Bule contour is actual distribution. The average of each review has 75 words in our corpus and the actually distribution is quite skew)
 ![image](https://github.com/HaoWeiHe/Sentiment-Classification/blob/main/Imgs/w_f.png)
 
 In this experiment, I use k-fold + auc_roc as the evaluation mertic to determine the best paramters of GridSearchCV. However, using k-fold will reduce variance which may make this distribution more skew.
