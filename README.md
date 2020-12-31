@@ -8,10 +8,16 @@ Sentiment-Classification is a project about Sentiment Classification using unstr
 Sentiment Classification using unstructured text
 
 ## What's New
+
 ### 2.1
 * create sentiment classification using w2f
 * training `word representation` model
 * explore word representation using TSNE and PCA
+* establish & tuning `LinearSVC` model.
+* establish & tuning `BernoulliNB` model.
+* establish & tuning `MLPClassifier` model.
+* establish & tuning `LogisticRegression` model.
+* establish & tuning `DecisionTree` model.
 
 ### 1.1
 * create sentiment classification using tf-idf
