@@ -8,6 +8,11 @@ Sentiment-Classification is a project about Sentiment Classification using unstr
 Sentiment Classification using unstructured text
 
 ## What's New
+### 2.1
+* create sentiment classification using w2f
+* training `word representation` model
+* explore word representation using TSNE and PCA
+
 ### 1.1
 * create sentiment classification using tf-idf
 
@@ -25,6 +30,10 @@ Sentiment Classification using unstructured text
 ![image](https://github.com/HaoWeiHe/Sentiment-Classification/blob/main/Imgs/distribution_word_freq.png)
 
 In this experiment, I use k-fold + auc_roc as the evaluation mertic to determine the best paramters of GridSearchCV. However, using k-fold will reduce variance which may make this distribution more skew.
+
+- Explore word representation using PCA + cos similarity
+![image](https://github.com/HaoWeiHe/Sentiment-Classification/blob/main/Imgs/PCA_w2v.png)
+Words near 'delightful' are the following words - superb, wornderful and fantasti and lovely, which show the ability of capture the semtatic in langauge. 
 
 ## Evaluation metrics
 ### 1.1 
