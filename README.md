@@ -10,7 +10,7 @@ Sentiment Classification using unstructured text
 ## What's New
 ### 2.1
 * create sentiment classification using w2f
-* training word representation model
+* training `word representation` model
 * explore word representation using TSNE and PCA
 
 ### 1.1
