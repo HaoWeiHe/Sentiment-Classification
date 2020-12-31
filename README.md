@@ -33,7 +33,7 @@ In this experiment, I use k-fold + auc_roc as the evaluation mertic to determine
 
 - Explore word representation using PCA + cos similarity
 ![image](https://github.com/HaoWeiHe/Sentiment-Classification/blob/main/Imgs/PCA_w2v.png)
-Words similarity to delightful are : superb, wornderful and fantasti etc. 
+Words near 'delightful' are the following words - superb, wornderful and fantasti and lovely, which show the ability of capture the semtatic in langauge. 
 
 ## Evaluation metrics
 ### 1.1 
