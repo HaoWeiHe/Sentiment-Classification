@@ -37,7 +37,8 @@ Words near 'delightful' are the following words - superb, wornderful and fantast
 
 ## Evaluation metrics
 ### 2.1
-Text data using word representaion
+Using word representaion as features. The perfomance do not better than tf-idf, that because we use average vector to compute sentence vector. By this approach, word representation lose strucutre information. From this point of view, Tf-idf provided more inform than word representation did.
+
 ```
 MODEL: LinearSVC(C=20, class_weight={1: 2}, dual=True, fit_intercept=True,
           intercept_scaling=1, loss='squared_hinge', max_iter=1000,
