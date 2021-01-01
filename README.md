@@ -54,6 +54,7 @@ Words near 'delightful' are the following words - superb, wornderful and fantast
 
 Using the last state to represent a sentence (instead of using avgerage vector from  vector of tokens)
 
+```
               precision    recall  f1-score   support
 
          0.0       0.91      0.94      0.93      7957
@@ -63,6 +64,7 @@ Using the last state to represent a sentence (instead of using avgerage vector f
    macro avg       0.93      0.93      0.93     16000
 weighted avg       0.93      0.93      0.93     16000
 
+```
 ### 2.1 & 2.2
 Using word representaion as features. The perfomance do not better than tf-idf, that because we use average vector to compute sentence vector. By this approach, word representation lose strucutre information. From this point of view, Tf-idf provided more inform than word representation did.
 
