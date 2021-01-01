@@ -52,7 +52,7 @@ Words near 'delightful' are the following words - superb, wornderful and fantast
 
 ### 2.3
 
-Using the last state to represent a sentence (instead of using avgerage vector from  vector of tokens)
+Using the last state to represent a sentence (instead of using avgerage vector from  vector of tokens). The result if better than avg method like 2.2 did.
 
 ```
               precision    recall  f1-score   support
