@@ -75,11 +75,6 @@ def toSentence(x):
 
 df_resample['clean'] = df_resample['tokens'].apply(toSentence)
 
-# df_resample['clean'].head(10)
-# import matplotlib.pyplot as plt
-# import seaborn as sns
-# df_resample.head()
-
 from sklearn.model_selection import train_test_split
 
 def split_train_test(data, test_size=0.2, shuffle_state = True):
@@ -110,6 +105,8 @@ def split_train_test(data, test_size=0.2, shuffle_state = True):
 X_train, X_test, Y_train, Y_test = split_train_test(df_resample)
 
 import matplotlib.pyplot as plt
+import seaborn as sns
+from scipy import stats
 fig, axes = plt.subplots(ncols=1)
 fig.set_size_inches(10,5)
 
@@ -172,7 +169,8 @@ def get_stn_vec(reviews,num_features, model):
 
 # # print(get_stn_vec([df_resample['tokens'][0]],NUM_FEATURES, m2v_model))
 
-m2v_model.most_similar("delightful")
+vocab = list(m2v_model.wv.vocab)
+len(vocab)
 
 from sklearn.manifold import TSNE
 import matplotlib as mpl
@@ -343,8 +341,8 @@ models = [gs_sv_best,gs_bnb_best,logi_best,mlp_best0,dt_sv_best]
 for model in models:
   from sklearn.metrics import classification_report
   print("MODEL: {} ".format(str(model)))
-  train_predict = model.predict(train_vec)
-  test_predict = model.predict(test_vec)
+  train_predict = model.predict(train_v)
+  test_predict = model.predict(test_v)
   print(">> training set \n")
   print(classification_report(Y_train['sentiment'],train_predict))
   print(">> testing set \n")
@@ -356,6 +354,73 @@ for model in models:
   print("Training set- roc_auc score:\t{:.2f}".format(roc_score1))
   print("Testing set - roc_auc score:\t{:.2f}".format(roc_score))
   print("\n\n")
+
+max_features = 20000
+EMBEDDING_DIM = 200
+VALIDATION_SPLIT = 0.2
+maxlen = 80 #from the distribution above, we know the avg length is about 75
+batch_size = 32
+nb_classes =2
+
+from keras.preprocessing.text import Tokenizer
+from keras.preprocessing import sequence
+from keras.utils import np_utils
+
+tokenizer = Tokenizer(nb_words=max_features)
+tokenizer.fit_on_texts(df_resample['tokens'])
+sequences_train = tokenizer.texts_to_sequences(X_train['tokens'])
+sequences_test = tokenizer.texts_to_sequences(X_test['tokens'])
+
+X_TRAIN = sequence.pad_sequences(sequences_train, maxlen = maxlen)
+X_TEST = sequence.pad_sequences(sequences_test, maxlen = maxlen)
+
+Y_TRAIN = np_utils.to_categorical(Y_train['sentiment'], nb_classes)
+Y_TEST = np_utils.to_categorical(Y_test['sentiment'], nb_classes)
+
+
+print('X_train shape:', X_train.shape)
+print('X_test shape:', X_test.shape)
+
+X_train
+
+import tensorflow as tf
+tf.__version__
+tf.test.is_gpu_available()
+# 或是版本比較低的tensorflow :
+sess = tf.Session(config=tf.ConfigProto(log_device_placement=True))
+
+# sequences_test
+
+from  keras import Sequential
+from keras.layers import *
+lstm_model = Sequential()
+lstm_model.add(Embedding(max_features, 128))
+
+lstm_model.add(LSTM(128, return_sequences=True))
+lstm_model.add(Dropout(0.2))  
+lstm_model.add(LSTM(128, return_sequences=True))  
+lstm_model.add(Dropout(0.2)) 
+lstm_model.add(LSTM(128))  # return a single vector of dimension 128
+lstm_model.add(Dense(10, activation='relu'))
+lstm_model.add(Dense(nb_classes))
+lstm_model.add(Activation('relu'))
+
+lstm_model.compile(loss='binary_crossentropy',
+              optimizer='adam',
+              metrics=['accuracy'])
+
+print('Training...')
+lstm_model.fit(X_TRAIN, Y_TRAIN, batch_size=batch_size, epochs=10)
+score, acc = lstm_model.evaluate(X_TEST, Y_TEST,
+                            batch_size=batch_size)
+
+print('Test accuracy:', acc)
+
+
+print("Generating test predictions...")
+y_preds = lstm_model.predict_classes(X_TEST, verbose=0)
+
+print(classification_report(Y_test['sentiment'],y_preds))
 
 models = [gs_sv_best,gs_bnb_best,logi_best,mlp_best0,dt_sv_best]
 
@@ -376,3 +441,11 @@ for model in models:
   print("Testing set - roc_auc score:\t{:.2f}".format(roc_score))
   print("\n\n")
 
+from tensorflow.python.client import device_lib
+print(device_lib.list_local_devices())
+
+from keras import backend as K
+K.tensorflow_backend._get_available_gpus()
+
+from tensorflow.python.client import device_lib
+print(device_lib.list_local_devices())
