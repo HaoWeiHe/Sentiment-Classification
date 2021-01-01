@@ -9,6 +9,10 @@ Sentiment Classification using unstructured text
 
 ## What's New
 
+### 2.3
+* Changing the way to represent the sentence vector
+* establish & tuning `LSTM` model.
+
 ### 2.2
 * establish & tuning `LinearSVC` model.
 * establish & tuning `BernoulliNB` model.
@@ -45,7 +49,21 @@ In this experiment, I use k-fold + auc_roc as the evaluation mertic to determine
 Words near 'delightful' are the following words - superb, wornderful and fantasti and lovely, which show the ability of capture the semtatic in langauge. 
 
 ## Evaluation metrics
-### 2.1
+
+### 2.3
+
+Using the last state to represent a sentence (instead of using avgerage vector from  vector of tokens)
+
+              precision    recall  f1-score   support
+
+         0.0       0.91      0.94      0.93      7957
+         1.0       0.94      0.91      0.92      8043
+
+    accuracy                           0.93     16000
+   macro avg       0.93      0.93      0.93     16000
+weighted avg       0.93      0.93      0.93     16000
+
+### 2.1 & 2.2
 Using word representaion as features. The perfomance do not better than tf-idf, that because we use average vector to compute sentence vector. By this approach, word representation lose strucutre information. From this point of view, Tf-idf provided more inform than word representation did.
 
 ```
