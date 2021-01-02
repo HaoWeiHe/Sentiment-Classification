@@ -131,7 +131,7 @@ params  = {
           }
 m2v_model = Word2Vec(**params)
 m2v_model_name = "w2v.model"
-m2v_model.save(m2v_model_name)
+# m2v_model.save(m2v_model_name)
 
 def download(file_name):
   from google.colab import files
@@ -223,6 +223,8 @@ print(m2v_model.wv.syn0.shape)
 
 m2v_model.wv.syn0
 
+
+
 from sklearn.cluster import KMeans
 # import time
 # num_clusters = m2v_model.wv.syn0.shape[0] // 5
@@ -251,6 +253,100 @@ train_v = np.nan_to_num(train_v)
 test_v = get_stn_vec(X_test['tokens'],NUM_FEATURES,m2v_model)
 test_v = np.nan_to_num(test_v)
 
+max_features = 20000
+EMBEDDING_DIM = 200
+VALIDATION_SPLIT = 0.2
+maxlen = 80 #from the distribution above, we know the avg length is about 75
+batch_size = 32
+nb_classes =2
+
+from keras.preprocessing.text import Tokenizer
+from keras.preprocessing import sequence
+from keras.utils import np_utils
+
+tokenizer = Tokenizer(nb_words=max_features)
+tokenizer.fit_on_texts(df_resample['tokens'])
+sequences_train = tokenizer.texts_to_sequences(X_train['tokens'])
+sequences_test = tokenizer.texts_to_sequences(X_test['tokens'])
+
+X_TRAIN = sequence.pad_sequences(sequences_train, maxlen = maxlen)
+X_TEST = sequence.pad_sequences(sequences_test, maxlen = maxlen)
+
+Y_TRAIN = np_utils.to_categorical(Y_train['sentiment'], nb_classes)
+Y_TEST = np_utils.to_categorical(Y_test['sentiment'], nb_classes)
+
+
+print('X_train shape:', X_train.shape)
+print('X_test shape:', X_test.shape)
+
+from  keras import Sequential
+from keras.layers import *
+lstm_model = Sequential()
+lstm_model.add(Embedding(max_features, 128))
+lstm_model.add(LSTM(128, return_sequences=True))
+lstm_model.add(Dropout(0.2))  
+lstm_model.add(LSTM(128, return_sequences=True,name="extracter_layer"))
+lstm_model.add(Dropout(0.2)) 
+lstm_model.add(LSTM(128))  # return a single vector of dimension 128
+lstm_model.add(Dense(10, activation='relu'))
+lstm_model.add(Dense(nb_classes))
+lstm_model.add(Activation('relu'))
+
+lstm_model.compile(loss='binary_crossentropy',
+              optimizer='adam',
+              metrics=['accuracy'])
+
+print('Training...')
+lstm_model.fit(X_TRAIN, Y_TRAIN, batch_size=batch_size, epochs=1)
+score, acc = lstm_model.evaluate(X_TEST, Y_TEST,
+                            batch_size=batch_size)
+
+print('Test accuracy:', acc)
+
+
+print("Generating test predictions...")
+y_preds = lstm_model.predict_classes(X_TEST, verbose=0)
+
+# sequences_exmaple = tokenizer.texts_to_sequences([X_train['tokens'].iloc[0]])
+# my_stn = sequence.pad_sequences(sequences_exmaple, maxlen = maxlen)
+
+from keras import Model
+inputs = Input(shape=(80,), dtype="int32")
+inp = Embedding(max_features, 128)(inputs)
+for i in range(3):
+    inp,states_h, states_c = LSTM(128, return_sequences=True, return_state=True)(inp)
+    inp = Dropout(0.2)(inp)
+
+inp= LSTM(128)(inp)  # return a single vector of dimension 128
+out = Dense(2, activation='sigmoid')(inp)
+lstm_model = Model(inputs,out)
+lstm_model.compile(loss='binary_crossentropy',
+              optimizer='adam',
+              metrics=['accuracy'])
+
+print('Training...')
+state_getting_model = Model(inputs, [inp, states_h, states_c]) 
+lstm_model.fit(X_TRAIN, Y_TRAIN, batch_size=batch_size, epochs=10)
+score, acc = lstm_model.evaluate(X_TEST, Y_TEST,
+                            batch_size=batch_size)
+
+print('Test accuracy:', acc)
+
+
+print("Generating test predictions...")
+outs = lstm_model.predict(X_TEST, verbose=0)
+y_pred = np.argmax(outs,axis = 1)
+
+#feature extraction from intermediate process
+# sequences_exmaple = tokenizer.texts_to_sequences(X_TEST)
+# my_stn = sequence.pad_sequences(sequences_exmaple, maxlen = maxlen)
+
+lstm_out, states_h_out, states_c_out = state_getting_model(X_TEST)
+
+states_h_out
+
+print(lstm_model.summary())
+
 dt = DecisionTreeClassifier(random_state= 64)
 
 param_grid1 = {
@@ -267,6 +363,8 @@ dt_sv.fit(train_v, Y_train['sentiment'])
 dt_sv_best = dt_sv.best_estimator_
 print(dt_sv.best_params_)
 # {'ccp_alpha': 0.01, 'class_weight': {1: 1}, 'criterion': 'entropy', 'max_depth': 3, 'min_samples_leaf': 2}
+
+
 
 print(dt_sv.best_score_)
 
@@ -355,72 +453,45 @@ for model in models:
   print("Testing set - roc_auc score:\t{:.2f}".format(roc_score))
   print("\n\n")
 
-max_features = 20000
-EMBEDDING_DIM = 200
-VALIDATION_SPLIT = 0.2
-maxlen = 80 #from the distribution above, we know the avg length is about 75
-batch_size = 32
-nb_classes =2
-
-from keras.preprocessing.text import Tokenizer
-from keras.preprocessing import sequence
-from keras.utils import np_utils
-
-tokenizer = Tokenizer(nb_words=max_features)
-tokenizer.fit_on_texts(df_resample['tokens'])
-sequences_train = tokenizer.texts_to_sequences(X_train['tokens'])
-sequences_test = tokenizer.texts_to_sequences(X_test['tokens'])
-
-X_TRAIN = sequence.pad_sequences(sequences_train, maxlen = maxlen)
-X_TEST = sequence.pad_sequences(sequences_test, maxlen = maxlen)
-
-Y_TRAIN = np_utils.to_categorical(Y_train['sentiment'], nb_classes)
-Y_TEST = np_utils.to_categorical(Y_test['sentiment'], nb_classes)
-
-
-print('X_train shape:', X_train.shape)
-print('X_test shape:', X_test.shape)
-
-X_train
-
+seed_value= 32
+# 4. Set the `tensorflow` pseudo-random generator at a fixed value
 import tensorflow as tf
-tf.__version__
-tf.test.is_gpu_available()
-# 或是版本比較低的tensorflow :
-sess = tf.Session(config=tf.ConfigProto(log_device_placement=True))
+tf.random.set_seed(seed_value)
+# for later versions: 
+# tf.compat.v1.set_random_seed(seed_valu
 
-# sequences_test
+# max_features = 128
+# from tensorflow import keras
+# from tensorflow.keras.layers import Embedding, LSTM, Dense, Dropout
+# inputs = keras.Input(shape=(None,), dtype="int32")
+# inp = Embedding(max_features, 128)(inputs)
+# for i in range(3):
+#     inp, states_h, states_c = LSTM(128, return_sequences=True, return_state=True)(inp)
+#     inp = Dropout(0.2)(inp)
 
-from  keras import Sequential
-from keras.layers import *
-lstm_model = Sequential()
-lstm_model.add(Embedding(max_features, 128))
+# inp = LSTM(128)(inp)  # return a single vector of dimension 128
+# out = Dense(2, activation='sigmoid')(inp)
+# lstm1 = keras.Model(inputs,out)
+# state_getting_model = keras.Model(inputs, [inp, states_h, states_c]) 
+# # lstm1.add(Activation('sigmoid'))
 
-lstm_model.add(LSTM(128, return_sequences=True))
-lstm_model.add(Dropout(0.2))  
-lstm_model.add(LSTM(128, return_sequences=True))  
-lstm_model.add(Dropout(0.2)) 
-lstm_model.add(LSTM(128))  # return a single vector of dimension 128
-lstm_model.add(Dense(10, activation='relu'))
-lstm_model.add(Dense(nb_classes))
-lstm_model.add(Activation('relu'))
+# lstm1.compile(loss='binary_crossentropy',
+#               optimizer='adam',
+#               metrics=['accuracy'])
 
-lstm_model.compile(loss='binary_crossentropy',
-              optimizer='adam',
-              metrics=['accuracy'])
+# print('Training...')
+# lstm1.fit(X_TRAIN, Y_TRAIN, batch_size=batch_size, epochs=10)
+# score, acc = lstm1.evaluate(X_TEST, Y_TEST,
+#                             batch_size=batch_size)
 
-print('Training...')
-lstm_model.fit(X_TRAIN, Y_TRAIN, batch_size=batch_size, epochs=10)
-score, acc = lstm_model.evaluate(X_TEST, Y_TEST,
-                            batch_size=batch_size)
-
-print('Test accuracy:', acc)
+# print('Test accuracy:', acc)
 
 
-print("Generating test predictions...")
-y_preds = lstm_model.predict_classes(X_TEST, verbose=0)
+# print("Generating test predictions...")
+# y_preds = lstm1.predict_classes(X_TEST, verbose=0)
 
-print(classification_report(Y_test['sentiment'],y_preds))
+from sklearn.metrics import classification_report
+print(classification_report(Y_test['sentiment'],y_pred))
 
 models = [gs_sv_best,gs_bnb_best,logi_best,mlp_best0,dt_sv_best]
 
