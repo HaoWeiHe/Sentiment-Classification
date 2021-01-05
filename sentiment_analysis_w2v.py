@@ -269,6 +269,7 @@ lstm_model.add(Dropout(0.2))
 lstm_model.add(LSTM(128, return_sequences=True))
 lstm_model.add(Dropout(0.2))  
 lstm_model.add(LSTM(128))  # return a single vector of dimension 128
+lstm_model.add(Dense(10, activation='relu'))
 lstm_model.add(Dense(nb_classes, activation='relu'))
 
 lstm_model.compile(loss='binary_crossentropy',
@@ -276,7 +277,7 @@ lstm_model.compile(loss='binary_crossentropy',
               metrics=['accuracy'])
 
 print('Training...')
-lstm_model.fit(X_TRAIN, Y_TRAIN, batch_size=batch_size, epochs = 10)
+lstm_model.fit(X_TRAIN, Y_TRAIN, batch_size=batch_size, epochs = 20)
 score, acc = lstm_model.evaluate(X_TEST, Y_TEST,
                             batch_size=batch_size)
 
@@ -348,10 +349,9 @@ lr_param = {
     'solver':['saga']
     }
 
-lstm_out, states_h_out, states_c_out = state_getting_model(X_TRAIN)
-states_c_out = states_c_out.numpy()
+
 lr_CV = GridSearchCV(lr, param_grid = lr_param, cv = kfold, scoring = 'roc_auc', n_jobs = 1, verbose = 1)
-lr_CV.fit(states_c_out, Y_test['sentiment'])
+lr_CV.fit(train_v, Y_train['sentiment'])
 print(lr_CV.best_params_)
 logi_best = lr_CV.best_estimator_
 
@@ -441,28 +441,6 @@ print(lr_CV.best_params_)
 logi_best = lr_CV.best_estimator_
 
 print(lr_CV.best_score_)
-
-models = [gs_sv_best,gs_bnb_best,logi_best,mlp_best0,dt_sv_best]
-
-for model in models:
-  from sklearn.metrics import classification_report
-  print("MODEL: {} ".format(str(model)))
-  train_predict = model.predict(train_v)
-  test_predict = model.predict(test_v)
-  print(">> training set \n")
-  print(classification_report(Y_train['sentiment'],train_predict))
-  print(">> testing set \n")
-  print(classification_report(Y_test['sentiment'],test_predict))
-
-  from sklearn.metrics import roc_auc_score
-  roc_score1 = roc_auc_score(Y_train['sentiment'],train_predict)
-  roc_score = roc_auc_score(Y_test['sentiment'],test_predict)
-  print("Training set- roc_auc score:\t{:.2f}".format(roc_score1))
-  print("Testing set - roc_auc score:\t{:.2f}".format(roc_score))
-  print("\n\n")
-
-from sklearn.metrics import classification_report
-print(classification_report(Y_test['sentiment'],y_pred))
 
 models = [gs_sv_best,gs_bnb_best,logi_best,mlp_best0,dt_sv_best]
 
