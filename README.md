@@ -9,6 +9,10 @@ Sentiment Classification using unstructured text
 
 ## What's New
 
+### 2.4
+* bert transfer learning
+* establish & tuning `bert` model.
+
 ### 2.3
 * Changing the way to represent the sentence vector
 * establish & tuning `LSTM` model.
