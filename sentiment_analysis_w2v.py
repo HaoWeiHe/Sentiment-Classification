@@ -264,20 +264,19 @@ from  keras import Sequential
 from keras.layers import *
 lstm_model = Sequential()
 lstm_model.add(Embedding(max_features, 128))
-for _ in range(3):
-  lstm_model.add(LSTM(128, return_sequences=True))
-  lstm_model.add(Dropout(0.2))  
+lstm_model.add(LSTM(128, return_sequences=True))
+lstm_model.add(Dropout(0.2))  
+lstm_model.add(LSTM(128, return_sequences=True))
+lstm_model.add(Dropout(0.2))  
 lstm_model.add(LSTM(128))  # return a single vector of dimension 128
-lstm_model.add(Dense(10, activation='relu'))
-lstm_model.add(Dense(nb_classes))
-lstm_model.add(Activation('relu'))
+lstm_model.add(Dense(nb_classes, activation='relu'))
 
 lstm_model.compile(loss='binary_crossentropy',
               optimizer='adam',
               metrics=['accuracy'])
 
 print('Training...')
-lstm_model.fit(X_TRAIN, Y_TRAIN, batch_size=batch_size, epochs = 6)
+lstm_model.fit(X_TRAIN, Y_TRAIN, batch_size=batch_size, epochs = 10)
 score, acc = lstm_model.evaluate(X_TEST, Y_TEST,
                             batch_size=batch_size)
 
