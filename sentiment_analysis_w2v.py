@@ -43,8 +43,6 @@ empty_text = (df_review['text'].isnull() \
             | df_review['sentiment'].isnull())
 df_review = df_review[~empty_text]
 
-NUM_FEATURES = 200
-
 #resampling data preprocess - 40,000 data for each sentiment level 
 def sample_data(n):
     return pd.concat([df_review[df_review['sentiment'] == i].head(n) for i in range(0,2)])
@@ -74,6 +72,8 @@ def toSentence(x):
   return " ".join(x)
 
 df_resample['clean'] = df_resample['tokens'].apply(toSentence)
+
+NUM_FEATURES = 200
 
 from sklearn.model_selection import train_test_split
 
@@ -140,9 +140,6 @@ def download(file_name):
 # from google.colab import files
 # model = files.upload()
 
-# m2v_model = Word2Vec.load("w2v.model")
-m2v_model
-
 #average the vetcor as an sentence representation
 #OOV happend when the frequency of word is less than  limitation (min_count)
 import numpy as np
@@ -186,24 +183,6 @@ print("Total Number of Vocab:", len(w_vs))
 
 tsne = TSNE(n_components = 2)
 X_tsne = tsne.fit_transform(w_vs[:100,:])
-
-# with open('embedding1.tsv', 'a') as f:
-    
-#     for v in vocab:
-#       line = ""
-#       for e in m2v_model[v]:
-#         line += str(e) + "\t"
-#       line = line[:-1]
-#       f.write('{}\n'.format(line))
-
-# download("embedding1.tsv")
-
-# with open('vcb1.tsv', 'a') as f:
-#   f.write("{}\n".format("vocab"))
-#   for v in vocab:
-#     f.write("{}\n".format(v))
-
-# download('vcb.tsv')
 
 df = pd.DataFrame(X_tsne, index = vocab[:100], columns = ['X','Y'])
 df.head()
@@ -253,7 +232,7 @@ train_v = np.nan_to_num(train_v)
 test_v = get_stn_vec(X_test['tokens'],NUM_FEATURES,m2v_model)
 test_v = np.nan_to_num(test_v)
 
-max_features = 20000
+max_features = 200
 EMBEDDING_DIM = 200
 VALIDATION_SPLIT = 0.2
 maxlen = 80 #from the distribution above, we know the avg length is about 75
@@ -279,14 +258,15 @@ Y_TEST = np_utils.to_categorical(Y_test['sentiment'], nb_classes)
 print('X_train shape:', X_train.shape)
 print('X_test shape:', X_test.shape)
 
+Y_test
+
 from  keras import Sequential
 from keras.layers import *
 lstm_model = Sequential()
 lstm_model.add(Embedding(max_features, 128))
-lstm_model.add(LSTM(128, return_sequences=True))
-lstm_model.add(Dropout(0.2))  
-lstm_model.add(LSTM(128, return_sequences=True,name="extracter_layer"))
-lstm_model.add(Dropout(0.2)) 
+for _ in range(3):
+  lstm_model.add(LSTM(128, return_sequences=True))
+  lstm_model.add(Dropout(0.2))  
 lstm_model.add(LSTM(128))  # return a single vector of dimension 128
 lstm_model.add(Dense(10, activation='relu'))
 lstm_model.add(Dense(nb_classes))
@@ -297,55 +277,86 @@ lstm_model.compile(loss='binary_crossentropy',
               metrics=['accuracy'])
 
 print('Training...')
-lstm_model.fit(X_TRAIN, Y_TRAIN, batch_size=batch_size, epochs=1)
+lstm_model.fit(X_TRAIN, Y_TRAIN, batch_size=batch_size, epochs = 6)
 score, acc = lstm_model.evaluate(X_TEST, Y_TEST,
                             batch_size=batch_size)
 
 print('Test accuracy:', acc)
-
-
 print("Generating test predictions...")
-y_preds = lstm_model.predict_classes(X_TEST, verbose=0)
 
-# sequences_exmaple = tokenizer.texts_to_sequences([X_train['tokens'].iloc[0]])
-# my_stn = sequence.pad_sequences(sequences_exmaple, maxlen = maxlen)
+from sklearn.metrics import classification_report
+train_predict = lstm_model.predict_classes(X_TRAIN, verbose=0)
+test_predict = lstm_model.predict_classes(X_TEST, verbose=0)
+print(">> training set \n")
+print(classification_report(Y_train['sentiment'],train_predict))
+print(">> testing set \n")
+print(classification_report(Y_test['sentiment'],test_predict))
 
-from keras import Model
-inputs = Input(shape=(80,), dtype="int32")
-inp = Embedding(max_features, 128)(inputs)
-for i in range(3):
-    inp,states_h, states_c = LSTM(128, return_sequences=True, return_state=True)(inp)
-    inp = Dropout(0.2)(inp)
+# download("yelp_reviews.csv")
 
-inp= LSTM(128)(inp)  # return a single vector of dimension 128
-out = Dense(2, activation='sigmoid')(inp)
-lstm_model = Model(inputs,out)
-lstm_model.compile(loss='binary_crossentropy',
-              optimizer='adam',
-              metrics=['accuracy'])
+import tensorflow as tf
+seed_value= 32
+tf.random.set_seed(seed_value)
 
-print('Training...')
-state_getting_model = Model(inputs, [inp, states_h, states_c]) 
-lstm_model.fit(X_TRAIN, Y_TRAIN, batch_size=batch_size, epochs=10)
-score, acc = lstm_model.evaluate(X_TEST, Y_TEST,
-                            batch_size=batch_size)
+# from keras import Model
+# from keras.layers import *
+# inputs = Input(shape=(80,), dtype="int32")
+# inp = Embedding(max_features, 128)(inputs)
+# for i in range(3):
+#     inp,states_h, states_c = LSTM(128, return_sequences=True, return_state=True)(inp)
+#     inp = Dropout(0.2)(inp)
 
-print('Test accuracy:', acc)
+# inp= LSTM(128)(inp)  # return a single vector of dimension 128
+# out = Dense(2, activation='sigmoid')(inp)
+# lstm_model = Model(inputs,out)
+# lstm_model.compile(loss='binary_crossentropy',
+#               optimizer='adam',
+#               metrics=['accuracy'])
+
+# print('Training...')
+# state_getting_model = Model(inputs, [inp, states_h, states_c]) 
+# lstm_model.fit(X_TRAIN, Y_TRAIN, batch_size=batch_size, epochs=3)
+# score, acc = lstm_model.evaluate(X_TEST, Y_TEST,
+#                             batch_size=batch_size)
+
+# print('Test accuracy:', acc)
 
 
-print("Generating test predictions...")
-outs = lstm_model.predict(X_TEST, verbose=0)
-y_pred = np.argmax(outs,axis = 1)
+# print("Generating test predictions...")
+# outs = lstm_model.predict(X_TEST, verbose=0)
+# y_pred = np.argmax(outs,axis = 1)
+
+# out, h, c = state_getting_model(X_TEST)
+  # # train_predict = model.predict(train_v)
+  # from sklearn.metrics import classification_report
+  # test_predict = lr_CV.predict(c)
+  # print(">> testing set \n")
+  # print(classification_report(Y_test['sentiment'],test_predict))
 
 #feature extraction from intermediate process
 # sequences_exmaple = tokenizer.texts_to_sequences(X_TEST)
 # my_stn = sequence.pad_sequences(sequences_exmaple, maxlen = maxlen)
 
-lstm_out, states_h_out, states_c_out = state_getting_model(X_TEST)
+# lstm_out, states_h_out, states_c_out = state_getting_model(X_TEST)
 
-states_h_out
+lr = LogisticRegression(random_state = 32)
 
-print(lstm_model.summary())
+lr_param = {
+     'penalty':['l1'],
+    'dual':[False],
+    'C':[100],
+    'class_weight':['balanced'],
+    'solver':['saga']
+    }
+
+lstm_out, states_h_out, states_c_out = state_getting_model(X_TRAIN)
+states_c_out = states_c_out.numpy()
+lr_CV = GridSearchCV(lr, param_grid = lr_param, cv = kfold, scoring = 'roc_auc', n_jobs = 1, verbose = 1)
+lr_CV.fit(states_c_out, Y_test['sentiment'])
+print(lr_CV.best_params_)
+logi_best = lr_CV.best_estimator_
+
+print(lr_CV.best_score_)
 
 dt = DecisionTreeClassifier(random_state= 64)
 
@@ -363,8 +374,6 @@ dt_sv.fit(train_v, Y_train['sentiment'])
 dt_sv_best = dt_sv.best_estimator_
 print(dt_sv.best_params_)
 # {'ccp_alpha': 0.01, 'class_weight': {1: 1}, 'criterion': 'entropy', 'max_depth': 3, 'min_samples_leaf': 2}
-
-
 
 print(dt_sv.best_score_)
 
@@ -453,43 +462,6 @@ for model in models:
   print("Testing set - roc_auc score:\t{:.2f}".format(roc_score))
   print("\n\n")
 
-seed_value= 32
-# 4. Set the `tensorflow` pseudo-random generator at a fixed value
-import tensorflow as tf
-tf.random.set_seed(seed_value)
-# for later versions: 
-# tf.compat.v1.set_random_seed(seed_valu
-
-# max_features = 128
-# from tensorflow import keras
-# from tensorflow.keras.layers import Embedding, LSTM, Dense, Dropout
-# inputs = keras.Input(shape=(None,), dtype="int32")
-# inp = Embedding(max_features, 128)(inputs)
-# for i in range(3):
-#     inp, states_h, states_c = LSTM(128, return_sequences=True, return_state=True)(inp)
-#     inp = Dropout(0.2)(inp)
-
-# inp = LSTM(128)(inp)  # return a single vector of dimension 128
-# out = Dense(2, activation='sigmoid')(inp)
-# lstm1 = keras.Model(inputs,out)
-# state_getting_model = keras.Model(inputs, [inp, states_h, states_c]) 
-# # lstm1.add(Activation('sigmoid'))
-
-# lstm1.compile(loss='binary_crossentropy',
-#               optimizer='adam',
-#               metrics=['accuracy'])
-
-# print('Training...')
-# lstm1.fit(X_TRAIN, Y_TRAIN, batch_size=batch_size, epochs=10)
-# score, acc = lstm1.evaluate(X_TEST, Y_TEST,
-#                             batch_size=batch_size)
-
-# print('Test accuracy:', acc)
-
-
-# print("Generating test predictions...")
-# y_preds = lstm1.predict_classes(X_TEST, verbose=0)
-
 from sklearn.metrics import classification_report
 print(classification_report(Y_test['sentiment'],y_pred))
 
@@ -511,12 +483,3 @@ for model in models:
   print("Training set- roc_auc score:\t{:.2f}".format(roc_score1))
   print("Testing set - roc_auc score:\t{:.2f}".format(roc_score))
   print("\n\n")
-
-from tensorflow.python.client import device_lib
-print(device_lib.list_local_devices())
-
-from keras import backend as K
-K.tensorflow_backend._get_available_gpus()
-
-from tensorflow.python.client import device_lib
-print(device_lib.list_local_devices())
