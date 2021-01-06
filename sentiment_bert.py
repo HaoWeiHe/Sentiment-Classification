@@ -153,12 +153,7 @@ def split_train_test(data, test_size=0.2, shuffle_state = True):
 
 # Call the train_test_split
 
-# MAX_LENGTH = 30
-# df_resample = df_resample[~(df_resample.text.apply(lambda x : len(x)) > MAX_LENGTH)]
-
 X_train, X_test, Y_train, Y_test = split_train_test(df_resample)
-
-
 
 df_train = X_train.reset_index()
 
@@ -170,17 +165,17 @@ print("#sample:", len(df_train))
 
 df_train.to_csv("train.tsv", sep="\t", index=False)
 
-print(df_train.label.value_counts() / len(df_train))
-
 #apply the same process for test data
 
-df_test = X_train.reset_index()
+df_test = X_test.reset_index()
 df_test['stn_b'] = df_test.apply(lambda x: None)
 df_test = df_test.loc[:, ['text','stn_b','sentiment']]
 df_test.columns = ['stn_a', 'stn_b','label']
 
 print("#sample:", len(df_test))
 df_test.to_csv("test.tsv", sep="\t", index=False)
+
+print(df_train.label.value_counts() / len(df_train))
 
 !pip install pysnooper -q
 
@@ -198,7 +193,7 @@ class ReviewDataset(Dataset):
   # @pysnooper.snoop() 
   def __getitem__(self, idx):
     if self.mode == "test":
-      text_a, text_b = self.df.iloc[idx,:2].values()
+      text_a, text_b = self.df.iloc[idx,:2].values
       label_tensor = None
     else:
       text_a, text_b, label= self.df.iloc[idx, :].values
@@ -385,3 +380,18 @@ for epoch in range(EPOCHS):
 
     print('[epoch %d] loss: %.3f, acc: %.3f' %
           (epoch + 1, running_loss, acc))
+
+from sklearn.metrics import classification_report
+testset = ReviewDataset("test", tokenizer=tokenizer)
+testloader = DataLoader(testset, batch_size=256, 
+                        collate_fn=create_mini_batch)
+test_pred = get_predictions(model, testloader)
+train_pred = get_predictions(model, trainloader)
+
+
+print(">> training set \n")
+print(classification_report(Y_train['sentiment'],train_pred.tolist()))
+
+
+print(">> testing set \n")
+print(classification_report(Y_test['sentiment'],test_pred.tolist()))
