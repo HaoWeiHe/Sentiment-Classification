@@ -54,6 +54,34 @@ Words near 'delightful' are the following words - superb, wornderful and fantast
 
 ## Evaluation metrics
 
+### 2.4
+
+Using bert and 25% data to classify. F1 macro average got 94%.
+
+>> training set 
+
+              precision    recall  f1-score   support
+
+         0.0       1.00      0.97      0.99      2320
+         1.0       0.99      1.00      0.99      4384
+
+    accuracy                           0.99      6704
+   macro avg       0.99      0.99      0.99      6704
+weighted avg       0.99      0.99      0.99      6704
+
+
+>> testing set 
+
+              precision    recall  f1-score   support
+
+         0.0       0.97      0.88      0.92       588
+         1.0       0.94      0.98      0.96      1088
+
+    accuracy                           0.95      1676
+   macro avg       0.95      0.93      0.94      1676
+weighted avg       0.95      0.95      0.95      1676
+
+
 ### 2.3
 
 Using the last state to represent a sentence (instead of using avgerage vector from  vector of tokens). The result if better than avg method like 2.2 did.
