@@ -56,7 +56,7 @@ Words near 'delightful' are the following words - superb, wornderful and fantast
 
 ### 2.4
 
-Using bert and 25% data to classify. F1 macro average got 94%.
+Using bert and 25% data to classify. F1 (weighted avg) got 95%.
 ```
 >> training set 
 
