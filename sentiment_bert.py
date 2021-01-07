@@ -35,6 +35,29 @@ def load_yelp_review():
   return df_review
 df_review = load_yelp_review()
 
+import matplotlib.pyplot as plt
+import seaborn as sns
+from scipy import stats
+fig, axes = plt.subplots(ncols=1)
+fig.set_size_inches(10,5)
+
+df_review['stn_len'] = df_review['text'].apply(lambda x: len(x))
+
+sns.distplot(df_review['stn_len'], bins = 90, fit = stats.norm)
+(mu0, sigma0) = stats.norm.fit(df_review['stn_len'])
+axes.legend(['Normal dist. ($\mu=$ {:.2f} and $\sigma=$ {:.2f} )'.format(mu0, sigma0)],loc='best')
+axes.set_title("Distribution Sentence Length")
+axes.axvline(df_review['stn_len'].median(), linestyle='dashed')
+print("median of sentence length: ", df_review['stn_len'].median())
+
+import seaborn as sns
+df_review['stn_len'] = df_review.text.apply(lambda x: len(x))
+ax = sns.barplot(x = "stars", y = "stn_len", data = df_review)
+
+means_arr = df_review.groupby(['stars']).stn_len.mean()
+for i,v in means_arr.items():
+  ax.text(i-1,v, color = 'black', ha = "center",s = "$ {:.2f}".format(v))
+
 # We make score 4,5 to  positive (1) and score 1,2 to  negtive(0)
 def sentiment_assign(x):
   if x ==3:
@@ -50,9 +73,15 @@ df_review = df_review[~empty_text]
 #resampling data preprocess - 40,000 data for each sentiment level 
 def sample_data(n):
     return pd.concat([df_review[df_review['sentiment'] == i].head(n) for i in range(0,2)])
-df_resample = sample_data(40000)
-MAX_LENGTH = 150
-df_resample = df_resample[~(df_resample.text.apply(lambda x : len(x)) > MAX_LENGTH)]
+df_resample_ori = sample_data(40000)
+
+3 in df_review.stars
+
+
+
+#To prevent GPU OOM. But if your 
+X_LENGTH = 150
+df_resample = df_resample_ori[~(df_resample_ori.text.apply(lambda x : len(x)) > MAX_LENGTH)]
 
 import torch
 from transformers import BertTokenizer
@@ -176,6 +205,8 @@ print("#sample:", len(df_test))
 df_test.to_csv("test.tsv", sep="\t", index=False)
 
 print(df_train.label.value_counts() / len(df_train))
+
+df_train.label.value_counts()
 
 !pip install pysnooper -q
 
@@ -302,7 +333,6 @@ for name, module in model.named_children():
         print("{:15} {}".format(name, module))
 
 data = next(iter(trainloader))
-
 for e in data:
   print(e.shape)
 
@@ -395,3 +425,22 @@ print(classification_report(Y_train['sentiment'],train_pred.tolist()))
 
 print(">> testing set \n")
 print(classification_report(Y_test['sentiment'],test_pred.tolist()))
+
+model_version = 'bert-base-cased'
+finetuned_model  = BertModel.from_pretrained(model_version, 
+                                  output_attentions=True, state_dict=model.state_dict())
+
+
+sentence_a = "I spent a really amazing time here not just because the food was exquisite but also the cozy atmosphere and the excellent service. The kindness of the chef and the stuff was super nice ! I’m living in Taiwan 3 years ago and is the first time I try authentic Colombian food here.  "
+
+
+
+inputs = tokenizer.encode_plus(sentence_a, sentence_a, return_tensors='pt', add_special_tokens=True)
+token_type_ids = inputs['token_type_ids']
+input_ids = inputs['input_ids']
+attention = finetuned_model(input_ids, token_type_ids=token_type_ids)[-1]
+input_id_list = input_ids[0].tolist() # Batch index 0
+tokens = tokenizer.convert_ids_to_tokens(input_id_list)
+call_html()
+head_view(attention, tokens)
+
