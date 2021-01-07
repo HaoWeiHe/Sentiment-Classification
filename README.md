@@ -12,6 +12,7 @@ Sentiment Classification using unstructured text
 ### 2.4
 * bert transfer learning
 * establish & tuning `bert` model.
+* visualization data distribution
 
 ### 2.3
 * Changing the way to represent the sentence vector
