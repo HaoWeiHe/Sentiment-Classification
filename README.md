@@ -5,7 +5,7 @@ Sentiment-Classification is a project for Sentiment Classification.(Take Yelp re
 ## Data Resource
 * [reviews download](https://www.yelp.com/dataset)
 
-Sentiment Classification using unstructured text
+
 
 ## What's New
 
