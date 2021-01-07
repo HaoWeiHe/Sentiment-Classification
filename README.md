@@ -54,12 +54,16 @@ In this experiment, I use k-fold + auc_roc as the evaluation mertic to determine
 Words near 'delightful' are the following words - superb, wornderful and fantasti and lovely, which show the ability of capture the semtatic in langauge. 
 
 - Sentence Lenght 
-
-![image](https://github.com/HaoWeiHe/Sentiment-Classification/blob/main/Imgs/sentence%20length.png, width = 400)
+<div align="center">
+	<img src="https://github.com/HaoWeiHe/Sentiment-Classification/blob/main/Imgs/sentence%20length.png" alt="Editor" width="500">
+</div>
 Here, we explore the sentence length and found - the words in reviews are quit long.
 
 - Sentence Lenght per star ranking (displying values are medium per stars)
-![image](https://github.com/HaoWeiHe/Sentiment-Classification/blob/main/Imgs/sentence%20length%20per%20star%20ranking.png, width = 400)
+<div align="center">
+	<img src="https://github.com/HaoWeiHe/Sentiment-Classification/blob/main/Imgs/sentence%20length%20per%20star%20ranking.png" alt="Editor" width="500">
+</div>
+
 We found that the lenght sentence often show up on low ranking reviews.
 
 ## Evaluation metrics
