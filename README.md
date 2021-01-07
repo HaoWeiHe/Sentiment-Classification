@@ -41,16 +41,25 @@ Sentiment Classification using unstructured text
 
 ## Observation
 - Top influence features (from LogisticRegression model)
-![image](https://github.com/HaoWeiHe/Sentiment-Classification/blob/main/Imgs/word%20observation_tf-idf.png)
+
+<div align="center">
+	<img src="https://github.com/HaoWeiHe/Sentiment-Classification/blob/main/Imgs/word%20observation_tf-idf.png" alt="Editor" width="500">
+</div>
 
 
 - Word frequency distribution (Black contour is normal distribution. Bule contour is actual distribution. The average of each review has 75 words in our corpus and the actually distribution is quite skew)
-![image](https://github.com/HaoWeiHe/Sentiment-Classification/blob/main/Imgs/distribution_word_freq.png)
+<div align="center">
+	<img src="https://github.com/HaoWeiHe/Sentiment-Classification/blob/main/Imgs/distribution_word_freq.png" alt="Editor" width="500">
+</div>
+
 
 In this experiment, I use k-fold + auc_roc as the evaluation mertic to determine the best paramters of GridSearchCV. However, using k-fold will reduce variance which may make this distribution more skew.
 
 - Explore word representation using PCA + cos similarity
-![image](https://github.com/HaoWeiHe/Sentiment-Classification/blob/main/Imgs/PCA_w2v.png)
+<div align="center">
+	<img src="https://github.com/HaoWeiHe/Sentiment-Classification/blob/main/Imgs/PCA_w2v.png" alt="Editor" width="500">
+</div>
+
 Words near 'delightful' are the following words - superb, wornderful and fantasti and lovely, which show the ability of capture the semtatic in langauge. 
 
 - Sentence Lenght 
