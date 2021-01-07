@@ -55,12 +55,12 @@ Words near 'delightful' are the following words - superb, wornderful and fantast
 
 - Sentence Lenght 
 
-![image](https://github.com/HaoWeiHe/Sentiment-Classification/blob/main/Imgs/sentence%20length.png)
+![image](https://github.com/HaoWeiHe/Sentiment-Classification/blob/main/Imgs/sentence%20length.png, width = 400)
 Here, we explore the sentence length and found - the words in reviews are quit long.
 
 - Sentence Lenght per star ranking (displying values are medium per stars)
-![image](https://github.com/HaoWeiHe/Sentiment-Classification/blob/main/Imgs/sentence%20length%20per%20star%20ranking.png)
-We found not only the lenght sentence often show up on low ranking reviews.
+![image](https://github.com/HaoWeiHe/Sentiment-Classification/blob/main/Imgs/sentence%20length%20per%20star%20ranking.png, width = 400)
+We found that the lenght sentence often show up on low ranking reviews.
 
 ## Evaluation metrics
 
