@@ -9,8 +9,11 @@ Sentiment-Classification is a project for Sentiment Classification.(Take Yelp re
 
 ## What's New
 
-### 3.0
-* explore other numerical features 
+### 3.1
+
+* explore other numerical features (rather than only text)
+
+
 ### 2.4
 * bert transfer learning
 * establish & tuning `bert` model.
