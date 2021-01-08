@@ -1,11 +1,11 @@
 # Sentiment-Classification
 
-Sentiment-Classification is a project about Sentiment Classification using unstructured text.(Take Yelp reviews as input)
+Sentiment-Classification is a project for Sentiment Classification.(Take Yelp reviews as input)
 
 ## Data Resource
 * [reviews download](https://www.yelp.com/dataset)
 
-Sentiment Classification using unstructured text
+
 
 ## What's New
 
@@ -41,17 +41,39 @@ Sentiment Classification using unstructured text
 
 ## Observation
 - Top influence features (from LogisticRegression model)
-![image](https://github.com/HaoWeiHe/Sentiment-Classification/blob/main/Imgs/word%20observation_tf-idf.png)
+
+<div align="center">
+	<img src="https://github.com/HaoWeiHe/Sentiment-Classification/blob/main/Imgs/word%20observation_tf-idf.png" alt="Editor" width="500">
+</div>
 
 
 - Word frequency distribution (Black contour is normal distribution. Bule contour is actual distribution. The average of each review has 75 words in our corpus and the actually distribution is quite skew)
-![image](https://github.com/HaoWeiHe/Sentiment-Classification/blob/main/Imgs/distribution_word_freq.png)
+<div align="center">
+	<img src="https://github.com/HaoWeiHe/Sentiment-Classification/blob/main/Imgs/distribution_word_freq.png" alt="Editor" width="500">
+</div>
+
 
 In this experiment, I use k-fold + auc_roc as the evaluation mertic to determine the best paramters of GridSearchCV. However, using k-fold will reduce variance which may make this distribution more skew.
 
 - Explore word representation using PCA + cos similarity
-![image](https://github.com/HaoWeiHe/Sentiment-Classification/blob/main/Imgs/PCA_w2v.png)
+<div align="center">
+	<img src="https://github.com/HaoWeiHe/Sentiment-Classification/blob/main/Imgs/PCA_w2v.png" alt="Editor" width="500">
+</div>
+
 Words near 'delightful' are the following words - superb, wornderful and fantasti and lovely, which show the ability of capture the semtatic in langauge. 
+
+- Sentence Lenght 
+<div align="center">
+	<img src="https://github.com/HaoWeiHe/Sentiment-Classification/blob/main/Imgs/sentence%20length.png" alt="Editor" width="500">
+</div>
+Here, we explore the sentence length and found - the words in reviews are quit long.
+
+- Sentence Lenght per star ranking (displying values are medium per stars)
+<div align="center">
+	<img src="https://github.com/HaoWeiHe/Sentiment-Classification/blob/main/Imgs/sentence%20length%20per%20star%20ranking.png" alt="Editor" width="500">
+</div>
+
+We found that the lenght sentence often show up on low ranking reviews.
 
 ## Evaluation metrics
 
