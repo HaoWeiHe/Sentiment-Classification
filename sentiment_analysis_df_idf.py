@@ -24,6 +24,11 @@ drive = GoogleDrive(gauth)
 downloaded = drive.CreateFile({'id':"19vqs637KK5rNgxlW-p8JUKUZi2m1zBe1"})  
 downloaded.GetContentFile('yelp_reviews.csv')
 
+def download(file_name):
+  from google.colab import files
+  files.download(file_name) 
+download("yelp_reviews.csv")
+
 import pandas as pd
 def load_yelp_review():
   DATA_PATH = "./yelp_reviews.csv"
@@ -37,6 +42,40 @@ def sentiment_assign(x):
     return None
   return 1 if x > 2 else 0
 df_review['sentiment'] = df_review["stars"].apply( sentiment_assign )
+
+X = df_review[['useful', 'funny','cool','stars']]
+scaler = StandardScaler()
+Z_sk = scaler.fit_transform(X)  
+
+Z = (X - X.mean(axis=0)) / X.std(axis=0, ddof=0)
+
+print(df_review[df_review.sentiment == 1].useful.median())
+print(df_review[df_review.stars == 1].useful.mean())
+
+from sklearn.decomposition import PCA
+import matplotlib.pyplot as plt
+
+n_components = 2
+random_state = 64
+
+pca = PCA(n_components = n_components, 
+          random_state = random_state)
+
+L = pca.fit_transform(Z)  # (n_samples, n_components)
+
+
+plt.scatter(L[:, 0], L[:, 1])
+plt.axis('equal');
+
+import numpy as np
+
+pcs = np.array(pca.components_) # (n_comp, n_features)
+
+df_pc = pd.DataFrame(pcs, columns=X.columns[:])
+df_pc.index = [f"No.{c} PC" for c in range(1,3)]
+df_pc.style\
+    .background_gradient(cmap='bwr_r', axis=None)\
+    .format("{:.2}")
 
 # Observe data, here we find out the data is not balance
 empty_text = (df_review['text'].isnull() \
@@ -176,6 +215,16 @@ axes[1].legend(['Normal dist. ($\mu=$ {:.2f} and $\sigma=$ {:.2f} )'.format(mu1,
 axes[1].axvline(X_train['unique_freq_word'].median(), linestyle='dashed')
 print("median of uniuqe word frequency: ", X_train['unique_freq_word'].median())
 
+# Create the visualizer and draw the vectors
+from yellowbrick.text import TSNEVisualizer
+
+plt.figure(figsize = [15,9])
+tsne = TSNEVisualizer()
+n = 20000
+
+tsne.fit(train_tv[:n], Y_train['sentiment'][:n])
+tsne.poof()
+
 #Modeling - TF-iDF data is high dim and spare data. linear model like  SVM, NN, Bernouli Naive Byes (for binary catelogry) would be the better chioces rather than tree method
 
 from sklearn.model_selection import GridSearchCV, StratifiedKFold, learning_curve
@@ -203,6 +252,12 @@ print(gs_sv.best_params_)
 
 # best params: {'C': 0.3, 'loss': 'squared_hinge'}
 
+# import tensorflow as tf
+# tf.__version__
+# tf.test.is_gpu_available()
+# # 或是版本比較低的tensorflow :
+# sess = tf.Session(config=tf.ConfigProto(log_device_placement=True))
+
 print(gs_sv.best_score_)
 
 #Predict sentiment using SVM model
@@ -225,7 +280,7 @@ print(gs_bnb.best_params_)
 
 print(gs_bnb.best_score_)
 
-MLP = MLPClassifier(random_state = 2018)
+MLP = MLPClassifier(random_state = 56)
 
 mlp_param_grid = {
     'hidden_layer_sizes':[(5)],
@@ -305,4 +360,3 @@ for model in models:
   print("Training set- roc_auc score:\t{:.2f}".format(roc_score1))
   print("Testing set - roc_auc score:\t{:.2f}".format(roc_score))
   print("\n\n")
-
