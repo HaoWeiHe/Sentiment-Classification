@@ -9,6 +9,8 @@ Sentiment-Classification is a project for Sentiment Classification.(Take Yelp re
 
 ## What's New
 
+### 3.0
+* explore other numerical features 
 ### 2.4
 * bert transfer learning
 * establish & tuning `bert` model.
@@ -29,7 +31,6 @@ Sentiment-Classification is a project for Sentiment Classification.(Take Yelp re
 * create sentiment classification using w2f
 * training `word representation` model
 * explore word representation using TSNE and PCA
-
 
 ### 1.1
 * create sentiment classification using tf-idf
@@ -74,6 +75,13 @@ Here, we explore the sentence length and found - the words in reviews are quit l
 </div>
 
 We found that the lenght sentence often show up on low ranking reviews.
+
+
+- Explore other numerical features using pca with standardization
+<div align="center">
+	<img src="https://github.com/HaoWeiHe/Sentiment-Classification/blob/main/Imgs/pca_with_standard_norm.png
+" alt="Editor" width="500">
+</div>
 
 ## Evaluation metrics
 
