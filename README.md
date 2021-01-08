@@ -79,9 +79,9 @@ We found that the lenght sentence often show up on low ranking reviews.
 
 - Explore other numerical features using pca with standardization
 <div align="center">
-	<img src="https://github.com/HaoWeiHe/Sentiment-Classification/blob/main/Imgs/pca_with_standard_norm.png
-" alt="Editor" width="500">
+	<img src="https://github.com/HaoWeiHe/Sentiment-Classification/blob/main/Imgs/pca_with_standard_norm.png" width="500">
 </div>
+per the result of PCA, maybe other feature do not help that much..
 
 ## Evaluation metrics
 
