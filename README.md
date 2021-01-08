@@ -132,7 +132,7 @@ weighted avg       0.93      0.93      0.93     16000
 
 ```
 ### 2.1 & 2.2
-Using word representaion as features. The perfomance do not better than tf-idf, that because we use average vector to compute sentence vector. By this approach, word representation lose strucutre information. From this point of view, Tf-idf provided more inform than word representation did.
+Using word representaion as features. The perfomance was not better than tf-idf, that because we use average vector to compute sentence vector. By this approach, word representation lose strucutre information. From this point of view, Tf-idf provided more inform than word representation did.
 
 ```
 MODEL: LinearSVC(C=20, class_weight={1: 2}, dual=True, fit_intercept=True,
