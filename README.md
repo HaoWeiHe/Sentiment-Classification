@@ -11,37 +11,37 @@ Sentiment-Classification is a project for Sentiment Classification.(Take Yelp re
 
 ### 3.1
 
-* explore other numerical features (rather than only text)
+* Explore other numerical features (rather than only text)
 
 
 ### 2.4
-* bert transfer learning
-* establish & tuning `bert` model.
-* visualization data distribution
+* Bert transfer learning
+* Establish & tuning `bert` model.
+* Visualization data distribution
 
 ### 2.3
 * Changing the way to represent the sentence vector
-* establish & tuning `LSTM` model.
+* Establish & tuning `LSTM` model.
 
 ### 2.2
-* establish & tuning `LinearSVC` model.
-* establish & tuning `BernoulliNB` model.
-* establish & tuning `MLPClassifier` model.
-* establish & tuning `LogisticRegression` model.
-* establish & tuning `DecisionTree` model.
+* Establish & tuning `LinearSVC` model.
+* Establish & tuning `BernoulliNB` model.
+* Establish & tuning `MLPClassifier` model.
+* Establish & tuning `LogisticRegression` model.
+* Establish & tuning `DecisionTree` model.
 
 ### 2.1
-* create sentiment classification using w2f
-* training `word representation` model
-* explore word representation using TSNE and PCA
+* Create sentiment classification using w2f
+* Training `word representation` model
+* Explore word representation using TSNE and PCA
 
 ### 1.1
-* create sentiment classification using tf-idf
+* Create sentiment classification using tf-idf
 
-* establish & tuning `LinearSVC` model.
-* establish & tuning `BernoulliNB` model.
-* establish & tuning `MLPClassifier` model.
-* establish & tuning `LogisticRegression` model.
+* Establish & tuning `LinearSVC` model.
+* Establish & tuning `BernoulliNB` model.
+* Establish & tuning `MLPClassifier` model.
+* Establish & tuning `LogisticRegression` model.
 
 ## Observation
 - Top influence features (from LogisticRegression model)
