@@ -81,7 +81,7 @@ We found that the lenght sentence often show up on low ranking reviews.
 <div align="center">
 	<img src="https://github.com/HaoWeiHe/Sentiment-Classification/blob/main/Imgs/pca_with_standard_norm.png" width="500">
 </div>
-per the result of PCA, maybe other feature do not help that much..
+per the result of PCA, we notice that a bad experience provide more "useful" information than good one.
 
 ## Evaluation metrics
 
