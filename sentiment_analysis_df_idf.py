@@ -7,6 +7,8 @@ Original file is located at
     https://colab.research.google.com/drive/1wPM7XWViblEMPvECQaWWA1YvQ58DsmO_
 """
 
+!pip install scikit-learn==0.24.1
+
 # Upload text from google drive
 # !pip install PyDrive
 from pydrive.auth import GoogleAuth
@@ -27,7 +29,7 @@ downloaded.GetContentFile('yelp_reviews.csv')
 def download(file_name):
   from google.colab import files
   files.download(file_name) 
-download("yelp_reviews.csv")
+# download("yelp_reviews.csv")
 
 import pandas as pd
 def load_yelp_review():
@@ -43,6 +45,7 @@ def sentiment_assign(x):
   return 1 if x > 2 else 0
 df_review['sentiment'] = df_review["stars"].apply( sentiment_assign )
 
+from sklearn.preprocessing import StandardScaler
 X = df_review[['useful', 'funny','cool','stars']]
 scaler = StandardScaler()
 Z_sk = scaler.fit_transform(X)  
@@ -118,10 +121,12 @@ df_resample['clean'].head(10)
 # import seaborn as sns
 # df_resample.head()
 
+df_review.iloc[0]
+
 from sklearn.model_selection import train_test_split
 
 def split_train_test(data, test_size=0.2, shuffle_state = True):
-    FEATURES = ['clean',"stars"]
+    FEATURES = ['clean',"stars","useful","cool"]
     X_train, X_test, Y_train, Y_test = train_test_split(
                                                         data[FEATURES],
                                                         data['sentiment'], 
@@ -156,10 +161,21 @@ params = {
           "stop_words" :"english"
 }
 tfidf = TfidfVectorizer(**params)
+
 # print(X_train['stem_tokens'])
 train_tv = tfidf.fit_transform(X_train['clean'])
 test_tv = tfidf.transform(X_test['clean'])
 vocab = tfidf.get_feature_names()
+
+# import pickle
+# with open('vectorizer.pk', 'wb') as f:
+#   pickle.dump(tfidf, f)
+
+# def download(file_name):
+#   from google.colab import files
+#   files.download(file_name) 
+
+# download("vectorizer.pk")
 
 import numpy as np
 
@@ -187,8 +203,6 @@ def cloud(data,backgroundcolor = 'white', width = 800, height = 600):
 
 cloud(' '.join(X_train['clean']))
 
-cloud(' '.join(X_test['clean']))
-
 #Observe distribution
 
 X_train['freq_word'] = X_train['clean'].apply(lambda x: len(str(x).split()))
@@ -215,50 +229,64 @@ axes[1].legend(['Normal dist. ($\mu=$ {:.2f} and $\sigma=$ {:.2f} )'.format(mu1,
 axes[1].axvline(X_train['unique_freq_word'].median(), linestyle='dashed')
 print("median of uniuqe word frequency: ", X_train['unique_freq_word'].median())
 
-# Create the visualizer and draw the vectors
-from yellowbrick.text import TSNEVisualizer
+# # Create the visualizer and draw the vectors
+# from yellowbrick.text import TSNEVisualizer
 
-plt.figure(figsize = [15,9])
-tsne = TSNEVisualizer()
-n = 20000
+# plt.figure(figsize = [15,9])
+# tsne = TSNEVisualizer()
+# n = 20000
 
-tsne.fit(train_tv[:n], Y_train['sentiment'][:n])
-tsne.poof()
+# tsne.fit(train_tv[:n], Y_train['sentiment'][:n])
+# tsne.poof()
 
 #Modeling - TF-iDF data is high dim and spare data. linear model like  SVM, NN, Bernouli Naive Byes (for binary catelogry) would be the better chioces rather than tree method
 
 from sklearn.model_selection import GridSearchCV, StratifiedKFold, learning_curve
-from sklearn.svm import LinearSVC
+from sklearn.svm import LinearSVC,SVC
 from sklearn.naive_bayes import BernoulliNB
 from sklearn.linear_model import LogisticRegression
 from sklearn.neural_network import MLPClassifier
 
-kfold = StratifiedKFold( n_splits = 10 , random_state = 98 )
+kfold = StratifiedKFold( n_splits = 10 , random_state = 98,shuffle=True )
 
 # LinearSVC
 
-sv = LinearSVC(random_state=2018)
-
-param_grid2 = {
-    'loss':['squared_hinge'],
-    'C': [0.3] #[0.1, 0.2, 0.3]
-}
+lsv = LinearSVC(random_state = 64)
+param_grid2 = {}
 
 
-gs_sv = GridSearchCV(sv, param_grid = [param_grid2], verbose = 1, cv = kfold, n_jobs = 1, scoring = 'roc_auc')
-gs_sv.fit(train_tv, Y_train['sentiment'])
-gs_sv_best = gs_sv.best_estimator_
-print(gs_sv.best_params_)
+gs_lsv = GridSearchCV(lsv, param_grid = [param_grid2], verbose = 1, cv = kfold, n_jobs = 1, scoring = 'roc_auc')
+gs_lsv.fit(train_tv, Y_train['sentiment'])#, sample_weight=weighted_sample)
+gs_lsv_best = gs_lsv.best_estimator_
+print(gs_lsv.best_params_)
 
-# best params: {'C': 0.3, 'loss': 'squared_hinge'}
+# best params: {'C': 0.3, 'loss': 'squared_hinge'} #0.9818(with weighted) #0.9856
 
-# import tensorflow as tf
-# tf.__version__
-# tf.test.is_gpu_available()
-# # 或是版本比較低的tensorflow :
-# sess = tf.Session(config=tf.ConfigProto(log_device_placement=True))
+print(gs_lsv.best_score_)
 
-print(gs_sv.best_score_)
+print(df_review[df_review.sentiment == 1].useful.median())
+print(df_review[df_review.useful!=0].useful.mean())
+
+rivsed_Value = df_review[df_review.useful!=0].useful.mean()
+def f(x):
+  return rivsed_Value if x!=0 else 1
+
+X_train['rivised_useful'] = X_train['useful'].apply(f)  #Z.useful.tolist()
+weighted_sample = X_train['rivised_useful'].tolist()
+
+# LinearSVC
+
+lsv = LinearSVC(random_state = 64)
+
+
+gs_lsv = GridSearchCV(lsv, param_grid = [param_grid2], verbose = 1, cv = kfold, n_jobs = 1, scoring = 'roc_auc')
+gs_lsv.fit(train_tv, Y_train['sentiment'], sample_weight=weighted_sample)
+gs_lsv_best = gs_lsv.best_estimator_
+print(gs_lsv.best_params_)
+
+# best params: {'C': 0.3, 'loss': 'squared_hinge'}  #0.9845037900214797 mean: 1
+
+print(gs_lsv.best_score_)
 
 #Predict sentiment using SVM model
 import gensim
@@ -267,7 +295,7 @@ tokens = simple_preprocess(stn)
 stemm = stem(tokens)
 stn_clean = " ".join(stemm)
 stn_v = tfidf.transform([stn_clean])
-print(gs_sv.predict(stn_v))
+print(gs_lsv.predict(stn_v))
 
 bnb = BernoulliNB()
 gs_bnb = GridSearchCV(bnb, param_grid = {'alpha':[0.001],# [0.001 ,0.01,  0.1]
@@ -342,7 +370,7 @@ for i in range(30):
 
 plt.show()
 
-models = [gs_sv_best,gs_bnb_best,mlp_best0,logi_best]
+models = [gs_lsv_best,gs_bnb_best,mlp_best0,logi_best]
 
 for model in models:
   from sklearn.metrics import classification_report
@@ -360,3 +388,4 @@ for model in models:
   print("Training set- roc_auc score:\t{:.2f}".format(roc_score1))
   print("Testing set - roc_auc score:\t{:.2f}".format(roc_score))
   print("\n\n")
+
