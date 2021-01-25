@@ -12,7 +12,8 @@ Sentiment-Classification is a project for Sentiment Classification.(Take Yelp re
 ### 3.1
 
 * Explore other numerical features (rather than only text)
-
+* Experiments `weighted samples` by leverage the "useful" information (a attribute provided by yelp)
+* Use 'mean' to deal missing value 
 
 ### 2.4
 * Bert transfer learning
