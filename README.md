@@ -9,39 +9,43 @@ Sentiment-Classification is a project for Sentiment Classification.(Take Yelp re
 
 ## What's New
 
-### 3.0
-* explore other numerical features 
+### 3.1
+
+* Explore other numerical features (rather than only text)
+* Experiments `weighted samples` by leverage the "useful" information (a attribute provided by yelp)
+* Use 'mean' to deal missing value 
+
 ### 2.4
-* bert transfer learning
-* establish & tuning `bert` model.
-* visualization data distribution
+* Bert transfer learning
+* Establish & tuning `bert` model.
+* Visualization data distribution
 
 ### 2.3
 * Changing the way to represent the sentence vector
-* establish & tuning `LSTM` model.
+* Establish & tuning `LSTM` model.
 
 ### 2.2
-* establish & tuning `LinearSVC` model.
-* establish & tuning `BernoulliNB` model.
-* establish & tuning `MLPClassifier` model.
-* establish & tuning `LogisticRegression` model.
-* establish & tuning `DecisionTree` model.
+* Establish & tuning `LinearSVC` model.
+* Establish & tuning `BernoulliNB` model.
+* Establish & tuning `MLPClassifier` model.
+* Establish & tuning `LogisticRegression` model.
+* Establish & tuning `DecisionTree` model.
 
 ### 2.1
-* create sentiment classification using w2f
-* training `word representation` model
-* explore word representation using TSNE and PCA
+* Create sentiment classification using w2f
+* Training `word representation` model
+* Explore word representation using TSNE and PCA
 
 ### 1.1
-* create sentiment classification using tf-idf
+* Create sentiment classification using tf-idf
 
-* establish & tuning `LinearSVC` model.
-* establish & tuning `BernoulliNB` model.
-* establish & tuning `MLPClassifier` model.
-* establish & tuning `LogisticRegression` model.
+* Establish & tuning `LinearSVC` model.
+* Establish & tuning `BernoulliNB` model.
+* Establish & tuning `MLPClassifier` model.
+* Establish & tuning `LogisticRegression` model.
 
 ## Observation
-- Top influence features (from LogisticRegression model)
+- Top influence features which extract from Logistic Regression model
 
 <div align="center">
 	<img src="https://github.com/HaoWeiHe/Sentiment-Classification/blob/main/Imgs/word%20observation_tf-idf.png" alt="Editor" width="500">
@@ -129,7 +133,7 @@ weighted avg       0.93      0.93      0.93     16000
 
 ```
 ### 2.1 & 2.2
-Using word representaion as features. The perfomance do not better than tf-idf, that because we use average vector to compute sentence vector. By this approach, word representation lose strucutre information. From this point of view, Tf-idf provided more inform than word representation did.
+Using word representaion as features. The perfomance was not better than tf-idf, that because we use average vector to compute sentence vector. By this approach, word representation lose strucutre information. From this point of view, Tf-idf provided more inform than word representation did.
 
 ```
 MODEL: LinearSVC(C=20, class_weight={1: 2}, dual=True, fit_intercept=True,
