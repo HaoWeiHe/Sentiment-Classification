@@ -45,7 +45,20 @@ Sentiment-Classification is a project for Sentiment Classification.(Take Yelp re
 * Establish & tuning `LogisticRegression` model.
 
 ## Observation
-- Top influence features which extract from Logistic Regression model
+
+- Generate descriptive statistics
+<div align="center">
+	<img src="https://github.com/HaoWeiHe/Sentiment-Classification/blob/main/Imgs/GS.png" alt="Editor" width="500">
+</div>
+
+- Word Cloud - get a  glimpse of the data
+<div align="center">
+	<img src="https://github.com/HaoWeiHe/Sentiment-Classification/blob/main/Imgs/WC.png" alt="Editor" width="500">
+</div>
+
+
+
+- Top influence features which extract from Logistic Regression model 
 
 <div align="center">
 	<img src="https://github.com/HaoWeiHe/Sentiment-Classification/blob/main/Imgs/word%20observation_tf-idf.png" alt="Editor" width="500">
