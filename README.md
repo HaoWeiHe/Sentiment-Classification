@@ -58,7 +58,7 @@ Sentiment-Classification is a project for Sentiment Classification.(Take Yelp re
 </div>
 
 
-In this experiment, I use k-fold + auc_roc as the evaluation mertic to determine the best paramters of GridSearchCV. However, using k-fold will reduce variance which may make this distribution more skew.
+In this experiment, I use k-fold + auc_roc as the evaluation mertic to determine the best paramters of GridSearchCV. However, using k-fold will reduce variance which may make this distribution more skew. Accroding to this anlysis, we can determine proper embedding size for word representation.
 
 - Explore word representation using PCA + cos similarity
 <div align="center">
