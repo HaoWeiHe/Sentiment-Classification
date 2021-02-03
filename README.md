@@ -61,7 +61,7 @@ Sentiment-Classification is a project for Sentiment Classification.(Take Yelp re
 - Top influence features which extract from Logistic Regression model 
 
 <div align="center">
-	<img src="https://github.com/HaoWeiHe/Sentiment-Classification/blob/main/Imgs/word%20observation_tf-idf.png" alt="Editor" width="500">
+	<img src="https://github.com/HaoWeiHe/Sentiment-Classification/blob/main/Imgs/word%20observation_tf-idf.png" alt="Editor" width="600">
 </div>
 
 
