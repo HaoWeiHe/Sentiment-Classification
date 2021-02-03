@@ -67,7 +67,7 @@ In this experiment, I use k-fold + auc_roc as the evaluation mertic to determine
 
 Words near 'delightful' are the following words - superb, wornderful and fantasti and lovely, which show the ability of capture the semtatic in langauge. 
 
-- Sentence Lenght 
+- Sentence Lenghth
 <div align="center">
 	<img src="https://github.com/HaoWeiHe/Sentiment-Classification/blob/main/Imgs/sentence%20length.png" alt="Editor" width="500">
 </div>
