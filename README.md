@@ -1,6 +1,6 @@
 # Sentiment-Classification
 
-Sentiment-Classification is a project for Sentiment Classification.(Take Yelp reviews as input)
+Sentiment-Classification is a project for Sentiment Classification.(Take Yelp reviews as training input)
 
 ## Data Resource
 * [reviews download](https://www.yelp.com/dataset)
