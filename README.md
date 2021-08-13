@@ -6,6 +6,7 @@ Sentiment-Classification is a project for Sentiment Classification.(Take Yelp re
 - conda env create -f freeze.yml
 - wget "https://drive.google.com/u/0/uc?id=1Fu9IUtS96L9L7gmQNO3LLUsa0Ec2YzJj&export=download" -O "mlp_best0"
 - wget "https://drive.google.com/u/0/uc?id=15FqMOWCt5kJsEEvbNx8F1uZ3VR_QMlC_&export=download" -O "tfidf.pickle"
+- mkdir model
 - mv tfidf.pickle model
 - mv mlp_best0 model
 
