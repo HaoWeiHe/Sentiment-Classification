@@ -18,7 +18,7 @@ Get the prediction
 import SentimentClassifier
 text = "bed experience"
 SentimentClassifier.predict(text) 
-#will return 0 for positive experience, 1 for negative experience
+#will return 1 for positive experience, 0 for negative experience
 ```
 ## Data Resource
 * [reviews download](https://www.yelp.com/dataset)
