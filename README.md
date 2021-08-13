@@ -2,9 +2,23 @@
 
 Sentiment-Classification is a project for Sentiment Classification.(Take Yelp reviews as training input)
 
+## Preparing Dependencies
+- conda env create -f freeze.yml
+- wget "https://drive.google.com/u/0/uc?id=1Fu9IUtS96L9L7gmQNO3LLUsa0Ec2YzJj&export=download" -O "mlp_best0"
+- wget "https://drive.google.com/u/0/uc?id=15FqMOWCt5kJsEEvbNx8F1uZ3VR_QMlC_&export=download" -O "tfidf.pickle"
+- mv tfidf.pickle model
+- mv mlp_best0 model
+
+## Usage
+Get the prediction
+```
+import SentimentClassifier
+text = "bed experience"
+SentimentClassifier.predict(text) #will return 0 for positive experience, 1 for negative experience
+
+```
 ## Data Resource
 * [reviews download](https://www.yelp.com/dataset)
-
 
 
 ## What's New
