@@ -27,6 +27,11 @@ class SentimentClassification():
     text = self.preprocss(text)
     text_tv = self.tfidf.transform([text])
     return self.mlp.predict(text_tv)[0]
+  
+  def pred_probs(self,text = ""):
+    text = self.preprocss(text)
+    text_tv = self.tfidf.transform([text])
+    return self.mlp.predict_proba(text_tv)[0]
     
 if __name__ == '__main__':
   text = "Bad experience"
