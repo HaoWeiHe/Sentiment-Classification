@@ -1,0 +1,218 @@
+<!doctype html>
+<html> 
+<head class="no-js">
+ 
+<title> multi-Label Classification </title> 
+<link rel="stylesheet" href={{ url_for('static', filename="css/base.css") }}>
+<link rel="stylesheet" href={{ url_for('static', filename="css/vendor.css") }}>
+<link rel="stylesheet" href={{ url_for('static', filename="css/main.css") }}>
+<link href="https://fonts.googleapis.com/css?family=Muli&display=swap" rel="stylesheet"> 
+ <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+ 
+  <link rel="shortcut icon" href={{ url_for('static', filename='media/pic/favicon.ico') }} type="image/x-icon">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+
+<style>
+    
+     
+ 
+.b-skills
+{
+  border-top: 1px solid #f9f9f9;
+  padding-top: 46px;
+  text-align: center;
+}
+.b-skills:last-child { margin-bottom: -30px; }
+.b-skills h2 { margin-bottom: 50px; font-weight: 900; text-transform: uppercase;}
+.skill-item
+{
+  position: relative;
+  max-width: 250px;
+  width: 100%;
+  margin-bottom: 30px;
+  color: #555;
+}
+.chart-container
+{
+  position: relative;
+  width: 100%;
+  height: 0;
+  padding-top: 100%;
+  margin-bottom: 27px;
+}
+.skill-item .chart,
+.skill-item .chart canvas
+{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100% !important;
+  height: 100% !important;
+}
+.skill-item .chart:before
+{
+  content: "";
+  width: 0;
+  height: 100%;
+}
+.skill-item .chart:before,
+.skill-item .percent
+{
+  display: inline-block;
+  vertical-align: middle;
+}
+.skill-item .percent
+{
+  position: relative;
+  line-height: 1;
+  font-size: 40px;
+  font-weight: 900;
+  z-index: 2;
+}
+.skill-item  .percent:after
+{
+  content: attr(data-after);
+  font-size: 20px;
+}
+       
+       p{
+           font-weight: 900;
+       }
+ 
+    
+    </style>
+ 
+  
+</head>
+<body id="top">
+  <header class="s-header", style="  background-color: #000000";>
+
+        <div class="header-logo">
+            <a class="site-logo" href="/"><img src={{ url_for('static', filename='media/pic/logo.png') }} alt="HaoWei"></a>
+        </div>
+
+        <nav class="header-nav-wrap">
+            <ul class="header-nav">
+                <li class="current"><a   href= {{url_for('index')}} title="home">Home</a></li>
+                <li><a  href={{url_for('index')}}#about title=> About</a></li>
+                <li><a  href={{url_for('index')}}#works title="works">Demo</a></li>
+                <li><a  href={{url_for('index')}}#resource title="resource">Resource</a></li>
+                <li><a  href={{url_for('index')}}#blog title="blog">Blog</a></li>
+                <li><a  href={{url_for('index')}}#contact title="contact">Contact</a></li>
+            </ul>
+        </nav>
+
+        <a class="header-menu-toggle" href="#0"><span>Menu</span></a>
+
+    </header> <!-- end s-header -->
+  
+<br><br><br><br>
+   
+    <section id="s-team" class="section">
+       
+      <br><br><br>
+      <div class="b-skills">
+        <div class="container">
+           <h2 >   Positive:   {{text}} </h2>
+          <div class="row">
+                <div class="col-sm-6 col-md-4">
+                  <div class="skill-item center-block">
+                    <div class="chart-container">
+                      <div class="chart " data-percent= {{pred_probs}} data-bar-color="#a7d212">
+                        <span class="percent" data-after="%"> {{pred_probs}} </span>
+                      </div>
+                    </div>
+                    <p>Confidence Level - Positive</p>
+                  </div>
+                </div>
+
+                  
+                  
+            
+
+            <div class="col-sm-6 col-md-4">
+              <div class="skill-item bottom-block">
+             <div class="" >
+
+                <a href= {{url_for('sentimentDemo')}} class=" btn btn--stroke" style="color: #000000; margin-top: 50%; font-size: 2rem">
+                    >> Try again       
+                </a>
+            </div>
+           
+              </div>
+            </div>
+
+
+          </div>
+         
+        </div>
+      </div>
+
+    </section>
+        <br><br><br><br><br>
+       
+
+  <!--  -->
+    <!-- Java Script
+    ================================================== -->
+    <script src=   {{ url_for('static', filename='js/jquery-3.2.1.min.js') }}></script>
+    <script src=   {{ url_for('static', filename="js/plugins.js") }}></script>
+    <script src=   {{ url_for('static', filename="js/main.js") }}></script>
+
+ 
+ <script src= {{ url_for('static', filename='jquery-2.2.4.min.js') }}></script>
+ <script src= {{ url_for('static', filename='jquery.appear.min.js') }}></script>
+ <script src= {{ url_for('static', filename='jquery.easypiechart.min.js') }}></script>
+
+ <script>
+
+        'use strict';
+    var $window = $(window);
+    function run()
+    {
+      var fName = arguments[0],
+        aArgs = Array.prototype.slice.call(arguments, 1);
+      try {
+        fName.apply(window, aArgs);
+      } catch(err) {
+         
+      }
+    };
+     
+    /* chart
+    ================================================== */
+    function _chart ()
+    {
+      $('.b-skills').appear(function() {
+        setTimeout(function() {
+          $('.chart').easyPieChart({
+            easing: 'easeOutElastic',
+            delay: 3000,
+            barColor: '#369670',
+            trackColor: '#fff',
+            scaleColor: false,
+            lineWidth: 21,
+            trackWidth: 21,
+            size: 250,
+            lineCap: 'round',
+            onStep: function(from, to, percent) {
+              this.el.children[0].innerHTML = Math.round(percent);
+            }
+          });
+        }, 150);
+      });
+    };
+     
+    $(document).ready(function() {
+      
+      run(_chart);
+      
+        
+    });
+        
+    </script>
+ 
+   
+</body>
+ 
+</html>
