@@ -1,0 +1,43 @@
+ {% extends "base.html" %}
+
+     {% block head %}
+         
+
+     {% endblock %}
+{% block main %}
+
+    <div class="row home-content__main">
+     <title> Sentiment Classification </title>   
+    <div class="box1" style="margin-bottom: 15px;">
+
+
+      <form id="demo"  method="get" action="{{url_for('SentimentSubmit')}}" >
+
+          <h1 style="color: #000000"> Input:  </h1>
+        
+        <input type="text" id="user_text" placeholder='text here' name="user_text" style="color:  #808080; font-size:25px;border-color:black;border-width:4px; font-style: italic;" size="126" value= ""  >
+
+        
+         <button type="submit" id="submitExample">Submit</button>
+      
+        </form>
+       
+    </div>
+   <div class="home-content__buttons" style="z-index :100">
+      
+        <a href= {{url_for('sentimentalPage')}} class=" btn btn--stroke">
+            Introduce
+        </a>
+    </div>
+   
+       
+    <h4 style="color: #000000; margin-left: 2px">
+       
+    Sentiment Classification - identify sentiments in commentaries </h4>
+ 
+    
+
+</div>
+ 
+        
+{% endblock %} 
